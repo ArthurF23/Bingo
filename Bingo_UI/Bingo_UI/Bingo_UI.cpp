@@ -124,7 +124,6 @@ bool card_2_btn_23_clicked = false;
 bool card_2_btn_24_clicked = false;
 bool card_2_btn_25_clicked = false;
 
-
 #define LBut                  0x0201
 #define RBut                  0x0002
 
@@ -185,6 +184,8 @@ bool card_2_btn_25_clicked = false;
 #define card_2_btn_25_ID 6490
 // Global variables
 string ball = generate::ball(false);
+string placehold_winner = "";
+string previous_ball = "";
 //string card[25];
 
 int card_1_start_x = 10;
@@ -972,7 +973,7 @@ int CALLBACK WinMain(
         NULL,
         hInstance,
         NULL
-    );
+    );   
     
 
     if (!hWnd)
@@ -1027,7 +1028,6 @@ int CALLBACK WinMain(
     // nCmdShow: the fourth parameter from WinMain
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
-
    
     // Main message loop:
     MSG msg;
@@ -1043,7 +1043,7 @@ int CALLBACK WinMain(
 
 
 
-string placehold_winner = "";
+
 
 
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
@@ -1058,20 +1058,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     HDC hdc;    
 
     string placehold = "Current Ball: " + ball;
-    string num = placehold;//"Bruh";//to_string(CALCULATOR().num_1);
-    TCHAR text[50];//{ (TCHAR)num.c_str() };//_T(" ");
+    string num = placehold;
+    TCHAR text[50];
     _tcscpy_s(text, CA2T(num.c_str()));
 
+    string placehold_PBALL = "Previous Balls: " + previous_ball;
+    TCHAR PBtext[8000];
+    _tcscpy_s(PBtext, CA2T(placehold_PBALL.c_str()));
+
     string placehold_2 = "Player 1 Card";
-    TCHAR text2[50];//{ (TCHAR)num.c_str() };//_T(" ");
+    TCHAR text2[50];
     _tcscpy_s(text2, CA2T(placehold_2.c_str()));
    
     string placehold_3 = "Player 2 Card";
-    TCHAR text3[50];//{ (TCHAR)num.c_str() };//_T(" ");
+    TCHAR text3[50];
     _tcscpy_s(text3, CA2T(placehold_3.c_str()));    
 
    
-    TCHAR text6[50];//{ (TCHAR)num.c_str() };//_T(" ");
+    TCHAR text6[50];
     _tcscpy_s(text6, CA2T(placehold_winner.c_str()));
 
 
@@ -1085,6 +1089,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             5, 5,
             text, _tcslen(text));
         // End application-specific layout section.
+
+        TextOut(hdc,
+            150, 5,
+            PBtext, _tcslen(PBtext));
 
         TextOut(hdc,
             115, 120,
@@ -1139,6 +1147,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;    
 
         case draw_new_ID:
+            previous_ball = ball + " | " + previous_ball;
             ball = generate::ball(false);
             InvalidateRect(hWnd, 0, TRUE);
             break;
